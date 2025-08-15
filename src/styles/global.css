@@ -1,0 +1,46 @@
+/* Minimal global styles for clean UI and testability */
+:root {
+  --bg: #0b0c10;
+  --panel: #14151a;
+  --text: #e6e6e6;
+  --muted: #a0a0a0;
+  --brand: #7aa2f7;
+  --error: #ff6b6b;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  background: var(--bg);
+  color: var(--text);
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.post-card {
+  background: var(--panel);
+  border: 1px solid #1f2430;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+.post-title { margin: 0 0 6px; }
+.post-meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 8px; }
+
+.comment { border-top: 1px solid #222632; padding-top: 8px; margin-top: 8px; }
+.comment-meta { color: var(--muted); font-size: 0.85rem; }
+
+.form-row { display: flex; gap: 8px; margin-top: 8px; }
+.input, .button {
+  font: inherit; color: var(--text);
+}
+.input { flex: 1; background: #0e1016; border: 1px solid #1f2430; border-radius: 8px; padding: 8px 10px; }
+.button { background: var(--brand); border: none; border-radius: 8px; padding: 8px 12px; cursor: pointer; }
+.button[disabled] { opacity: 0.6; cursor: not-allowed; }
+.error { color: var(--error); font-size: 0.9rem; margin-top: 4px; }
