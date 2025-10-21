@@ -34,9 +34,18 @@ jobs:
           allure-token: ${{ secrets.ALLURE_TOKEN }}
 
       - name: Run Playwright tests (with Allure upload)
-        run: allurectl watch --results allure-results -- npm run test:e2e
+        run: |
+          allurectl watch \
+            --endpoint "$ALLURE_ENDPOINT" \
+            --project-id "$ALLURE_PROJECT_ID" \
+            --token "$ALLURE_TOKEN" \
+            --results allure-results -- \
+            npm run test:e2e
         env:
           CI: 'true'
+          ALLURE_ENDPOINT: ${{ secrets.ALLURE_ENDPOINT }}
+          ALLURE_PROJECT_ID: ${{ secrets.ALLURE_PROJECT_ID }}
+          ALLURE_TOKEN: ${{ secrets.ALLURE_TOKEN }}
 
       - name: Upload Playwright report
         if: always()
