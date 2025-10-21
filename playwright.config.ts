@@ -5,12 +5,17 @@ export default defineConfig({
   timeout: 30_000,
   expect: { timeout: 5_000 },
   retries: 0,
-  reporter: [['list']],
+  reporter: [
+    ['list'],
+    ['html'],
+    // Allure results are generated into `allure-results` directory
+    ['allure-playwright'],
+  ],
   use: {
     baseURL: 'http://localhost:5173',
     trace: 'on-first-retry',
     viewport: { width: 1280, height: 800 },
-    headless: false,
+    headless: !!process.env.CI,
   },
   projects: [
     {
@@ -25,7 +30,7 @@ export default defineConfig({
   webServer: {
     command: 'npm run dev',
     url: 'http://localhost:5173',
-    reuseExistingServer: true,
+    reuseExistingServer: !process.env.CI,
     timeout: 60_000,
   },
 });
