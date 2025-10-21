@@ -10,6 +10,7 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    environment: main
     env:
       ALLURE_ENDPOINT: ${{ secrets.ALLURE_ENDPOINT }}
       ALLURE_PROJECT_ID: ${{ secrets.ALLURE_PROJECT_ID }}
@@ -30,8 +31,14 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
+      - name: Validate Allure secrets
+        run: |
+          if [ -z "$ALLURE_ENDPOINT" ] || [ -z "$ALLURE_PROJECT_ID" ] || [ -z "$ALLURE_TOKEN" ]; then
+            echo "Required Allure secrets are missing. Set ALLURE_ENDPOINT, ALLURE_PROJECT_ID, ALLURE_TOKEN in environment 'main'." >&2
+            exit 1
+          fi
+
       - name: Setup allurectl
-        if: ${{ env.ALLURE_ENDPOINT != '' && env.ALLURE_PROJECT_ID != '' && env.ALLURE_TOKEN != '' }}
         uses: allure-framework/setup-allurectl@v1
         with:
           allure-endpoint: ${{ env.ALLURE_ENDPOINT }}
@@ -39,7 +46,6 @@ jobs:
           allure-token: ${{ env.ALLURE_TOKEN }}
 
       - name: Run Playwright tests (with Allure upload)
-        if: ${{ env.ALLURE_ENDPOINT != '' && env.ALLURE_PROJECT_ID != '' && env.ALLURE_TOKEN != '' }}
         run: |
           allurectl watch \
             --endpoint "$ALLURE_ENDPOINT" \
@@ -53,12 +59,6 @@ jobs:
           ALLURE_ENDPOINT: ${{ env.ALLURE_ENDPOINT }}
           ALLURE_PROJECT_ID: ${{ env.ALLURE_PROJECT_ID }}
           ALLURE_TOKEN: ${{ env.ALLURE_TOKEN }}
-
-      - name: Run Playwright tests (no Allure)
-        if: ${{ !(env.ALLURE_ENDPOINT != '' && env.ALLURE_PROJECT_ID != '' && env.ALLURE_TOKEN != '' ) }}
-        run: npm run test:e2e
-        env:
-          CI: 'true'
 
       - name: Upload Playwright report
         if: always()
