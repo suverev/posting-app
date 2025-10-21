@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { test, expect } from '@playwright/test';
+import { allure } from 'allure-playwright';
 import { HomePage } from '../../pom/HomePage';
 import { makeAuthor, makeCommentText, longText, POST_TITLES } from '../testData';
 
