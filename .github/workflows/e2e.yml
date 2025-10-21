@@ -10,6 +10,10 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      ALLURE_ENDPOINT: ${{ secrets.ALLURE_ENDPOINT }}
+      ALLURE_PROJECT_ID: ${{ secrets.ALLURE_PROJECT_ID }}
+      ALLURE_TOKEN: ${{ secrets.ALLURE_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,15 +31,15 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Setup allurectl
-        if: ${{ secrets.ALLURE_ENDPOINT != '' && secrets.ALLURE_PROJECT_ID != '' && secrets.ALLURE_TOKEN != '' }}
+        if: ${{ env.ALLURE_ENDPOINT != '' && env.ALLURE_PROJECT_ID != '' && env.ALLURE_TOKEN != '' }}
         uses: allure-framework/setup-allurectl@v1
         with:
-          allure-endpoint: ${{ secrets.ALLURE_ENDPOINT }}
-          allure-project-id: ${{ secrets.ALLURE_PROJECT_ID }}
-          allure-token: ${{ secrets.ALLURE_TOKEN }}
+          allure-endpoint: ${{ env.ALLURE_ENDPOINT }}
+          allure-project-id: ${{ env.ALLURE_PROJECT_ID }}
+          allure-token: ${{ env.ALLURE_TOKEN }}
 
       - name: Run Playwright tests (with Allure upload)
-        if: ${{ secrets.ALLURE_ENDPOINT != '' && secrets.ALLURE_PROJECT_ID != '' && secrets.ALLURE_TOKEN != '' }}
+        if: ${{ env.ALLURE_ENDPOINT != '' && env.ALLURE_PROJECT_ID != '' && env.ALLURE_TOKEN != '' }}
         run: |
           allurectl watch \
             --endpoint "$ALLURE_ENDPOINT" \
@@ -46,12 +50,12 @@ jobs:
             npm run test:e2e
         env:
           CI: 'true'
-          ALLURE_ENDPOINT: ${{ secrets.ALLURE_ENDPOINT }}
-          ALLURE_PROJECT_ID: ${{ secrets.ALLURE_PROJECT_ID }}
-          ALLURE_TOKEN: ${{ secrets.ALLURE_TOKEN }}
+          ALLURE_ENDPOINT: ${{ env.ALLURE_ENDPOINT }}
+          ALLURE_PROJECT_ID: ${{ env.ALLURE_PROJECT_ID }}
+          ALLURE_TOKEN: ${{ env.ALLURE_TOKEN }}
 
       - name: Run Playwright tests (no Allure)
-        if: ${{ !(secrets.ALLURE_ENDPOINT != '' && secrets.ALLURE_PROJECT_ID != '' && secrets.ALLURE_TOKEN != '' ) }}
+        if: ${{ !(env.ALLURE_ENDPOINT != '' && env.ALLURE_PROJECT_ID != '' && env.ALLURE_TOKEN != '' ) }}
         run: npm run test:e2e
         env:
           CI: 'true'
