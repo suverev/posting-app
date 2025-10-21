@@ -51,7 +51,14 @@ jobs:
             --endpoint "$ALLURE_ENDPOINT" \
             --project-id "$ALLURE_PROJECT_ID" \
             --token "$ALLURE_TOKEN" \
-            --silent \
+            --ci-type github \
+            --job-uid "${{ github.repository }}#${{ github.workflow }}" \
+            --job-run-uid "${{ github.run_id }}" \
+            --job-run-name "#${{ github.run_number }}" \
+            --job-run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            --launch-name "posting-app • E2E • Playwright #${{ github.run_number }}" \
+            --launch-tags "playwright,e2e,github-actions" \
+            --cooldown 10s \
             --results allure-results -- \
             npm run test:e2e
         env:

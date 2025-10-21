@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { test, expect } from '@playwright/test';
 import { HomePage } from '../../pom/HomePage';
 import { makeAuthor, makeCommentText, longText, POST_TITLES } from '../testData';
@@ -97,5 +98,18 @@ test.describe('Posts • Comments', () => {
     const postB = await home.getPostByTitle(POST_TITLES.second);
     // ensure B doesn't contain A's text
     await expect(postB.comments.filter({ hasText: textA })).toHaveCount(0);
+  });
+
+  test('whitespace-only author is normalized to Anonymous', async ({ page }) => {
+    allure.id('PA-57');
+    const home = new HomePage(page);
+    await home.goto();
+
+    const first = await home.getPostByTitle(POST_TITLES.first);
+    const text = makeCommentText();
+    await first.addAndAssert(text, '   ');
+
+    const added = first.comments.filter({ hasText: text }).first();
+    await expect(added.getByText(/By\s+Anonymous/i)).toBeVisible();
   });
 });
