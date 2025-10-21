@@ -1,6 +1,5 @@
 // @ts-nocheck
 import { test, expect } from '@playwright/test';
-import { allure } from 'allure-playwright';
 import { HomePage } from '../../pom/HomePage';
 import { makeAuthor, makeCommentText, longText, POST_TITLES } from '../testData';
 
@@ -101,8 +100,7 @@ test.describe('Posts • Comments', () => {
     await expect(postB.comments.filter({ hasText: textA })).toHaveCount(0);
   });
 
-  test('whitespace-only author is normalized to Anonymous', async ({ page }) => {
-    allure.id('PA-57');
+  test('whitespace-only author is normalized to Anonymous @allure.id:57', async ({ page }) => {
     const home = new HomePage(page);
     await home.goto();
 
